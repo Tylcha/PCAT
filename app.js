@@ -5,6 +5,7 @@ import ejs from 'ejs';
 import { fileURLToPath } from 'url';
 import { Photo } from './models/Photo.js';
 import mongoose from 'mongoose';
+import fileUpload from 'express-fileupload';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 mongoose.connect('mongodb://localhost/pcat-test-db');
@@ -18,13 +19,14 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(fileUpload());
 
 //ROUTES
 // app.get('/', (req, res) => {
 //     res.render('index');
 // });
 app.get('/', async (req, res) => {
-    const photos = await Photo.find({});
+    const photos = await Photo.find({}).sort({ dateCreated: -1 });
     res.render('index', { photos });
     // console.log(photos);
 });
@@ -40,13 +42,28 @@ app.get('/add', (req, res) => {
 //     res.redirect('/')
 // })
 app.post('/photos', async (req, res) => {
-    await Photo.create(req.body);
+    let sampleFile;
+    let uploadPath;
+    sampleFile = req.files.image;
+    uploadPath = __dirname + '/public/uploads/' + sampleFile.name;
+    sampleFile.mv(uploadPath, async () => {
+        await Photo.create({
+            ...req.body,
+            image: '/uploads/' + sampleFile.name,
+        });
+    });
+
     res.redirect('/');
 });
 app.get('/photo/:id', async (req, res) => {
     const photoid = await Photo.findById(req.params.id);
-    res.render('photo', {photoid});
+    res.render('photo', { photoid });
 });
+
+const uploadDir = 'public/uploads';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
 
 const port = 3000;
 app.listen(port, () => {

@@ -43,6 +43,10 @@ app.post('/photos', async (req, res) => {
     await Photo.create(req.body);
     res.redirect('/');
 });
+app.get('/photo/:id', async (req, res) => {
+    const photoid = await Photo.findById(req.params.id);
+    res.render('photo', {photoid});
+});
 
 const port = 3000;
 app.listen(port, () => {

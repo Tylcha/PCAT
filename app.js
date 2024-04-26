@@ -21,7 +21,9 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(fileUpload());
-app.use(methodOverride('_method'));
+app.use(methodOverride('_method',{
+    methods: ['POST', 'GET']
+}));
 
 //ROUTES
 // app.get('/', (req, res) => {
@@ -70,6 +72,12 @@ app.get('/photos/edit/:id', async (req, res) => {
     photoid.description = req.body.description;
     await photoid.save();
     res.redirect(`/photo/${req.params.id}`);
+}).delete('/photos/edit/:id', async (req , res) =>{
+    const photoid = await Photo.findById(req.params.id);
+    let file = __dirname + '/public' + photoid.image;
+    fs.unlinkSync(file);
+    await Photo.findByIdAndDelete(req.params.id)
+    res.redirect('/');
 });
 
 const uploadDir = 'public/uploads';

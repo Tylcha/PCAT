@@ -51,6 +51,7 @@ https://templatemo.com/tm-552-video-catalog
                                     <div class="text-center">
                                         <a href="/photos/edit/<%= photoid._id %>?_method=DELETE">
                                         <button
+                                        onclick="return confirm('Are you sure you want to delete?')"
                                             class="btn btn-danger p-0 tm-btn-animate tm-btn-download tm-icon-download"><span>Delete
                                                 Photo</span></button>
                                             </a>

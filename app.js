@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { Photo } from './models/Photo.js';
 import mongoose from 'mongoose';
 import fileUpload from 'express-fileupload';
+import methodOverride from 'method-override';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 mongoose.connect('mongodb://localhost/pcat-test-db');
@@ -20,6 +21,7 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(fileUpload());
+app.use(methodOverride('_method'));
 
 //ROUTES
 // app.get('/', (req, res) => {
@@ -58,6 +60,16 @@ app.post('/photos', async (req, res) => {
 app.get('/photo/:id', async (req, res) => {
     const photoid = await Photo.findById(req.params.id);
     res.render('photo', { photoid });
+});
+app.get('/photos/edit/:id', async (req, res) => {
+    const photoid = await Photo.findById(req.params.id);
+    res.render('edit', { photoid });
+}).put('/photos/edit/:id', async (req, res) => {
+    const photoid = await Photo.findById(req.params.id);
+    photoid.title = req.body.title;
+    photoid.description = req.body.description;
+    await photoid.save();
+    res.redirect(`/photo/${req.params.id}`);
 });
 
 const uploadDir = 'public/uploads';

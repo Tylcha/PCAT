@@ -1,5 +1,6 @@
 import express from 'express';
 import ejs from 'ejs';
+import 'dotenv/config';
 
 import fileUpload from 'express-fileupload';
 import methodOverride from 'method-override';
@@ -8,8 +9,6 @@ import pageRoute from './routes/pageRoute.js';
 import photoRoute from './routes/photoRoute.js';
 
 import conn from './models/connect.js';
-
-
 
 const app = express();
 
@@ -34,7 +33,6 @@ app.use(
 app.use('/', pageRoute);
 app.use('/photo', photoRoute);
 
-const port = 3000;
-app.listen(port, () => {
-    console.log(`Server listening on ${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server listening on ${process.env.PORT}`);
 });

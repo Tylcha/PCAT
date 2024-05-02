@@ -4,7 +4,7 @@ const getAllPhotos = async (req, res) => {
     //take req query /?page= if in req = '/' equal 1
     const page = parseInt(req.query.page) || 1;
     //page photo limit
-    const photosLimit = 1;
+    const photosLimit = 2;
     //all page
     const allPhotoCount = await Photo.find({}).countDocuments();
     //photos show page per 3
@@ -15,7 +15,7 @@ const getAllPhotos = async (req, res) => {
         .skip((page - 1) * photosLimit)
         //show limit 3
         .limit(photosLimit);
-    console.log(allPhotoCount);
+    
 
     // const photos = await Photo.find({}).sort({ dateCreated: -1 });
     res.render('index', {

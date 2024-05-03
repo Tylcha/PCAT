@@ -33,6 +33,8 @@ app.use(
 app.use('/', pageRoute);
 app.use('/photo', photoRoute);
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server listening on ${process.env.PORT}`);
+//server oto port if empty take 3000
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Server listening on ${port}`);
 });

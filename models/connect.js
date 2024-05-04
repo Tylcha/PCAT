@@ -1,8 +1,15 @@
 import mongoose from 'mongoose';
 import 'dotenv/config';
 
-const conn = () => {
-    mongoose.connect(process.env.DBI_URL);
+const conn = async () => {
+    try {
+        await mongoose.connect(process.env.DBI_URL, {
+            dbName: 'pcat',
+            serverApi: { version: '1', strict: true, deprecationErrors: true },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 export default conn;
